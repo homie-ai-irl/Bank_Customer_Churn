@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Customer Churn Prediction</title>
+    <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+
+<div class="container">
+
+    <!-- HEADER -->
+    <header class="header">
+        <h1>Customer Churn Prediction</h1>
+        <p>Analyze customer risk using Machine Learning</p>
+    </header>
+
+    <div class="layout">
+
+        <!-- FORM -->
+        <div class="card form-card">
+            <h2>Customer Information</h2>
+
+            <form id="form">
+
+                <div class="form-grid">
+
+                    <div class="form-group">
+                        <label>Credit Score</label>
+                        <input id="credit_score" type="number" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Age</label>
+                        <input id="age" type="number" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Balance</label>
+                        <input id="balance" type="number" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Products</label>
+                        <input id="products_number" type="number" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Country</label>
+                        <select id="country">
+                            <option>France</option>
+                            <option>Spain</option>
+                            <option>Germany</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Gender</label>
+                        <select id="gender">
+                            <option>Male</option>
+                            <option>Female</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Active Member</label>
+                        <select id="active_member">
+                            <option value="1">Yes</option>
+                            <option value="0">No</option>
+                        </select>
+                    </div>
+
+                </div>
+
+                <button type="submit" class="btn">
+                    🔍 Predict Churn
+                </button>
+
+            </form>
+        </div>
+
+        <!-- RESULT -->
+        <div class="card result-card">
+            <h2>Prediction Result</h2>
+
+            <div id="loading" class="hidden">⏳ Analyzing...</div>
+
+            <div id="result" class="result-box">
+                <p class="placeholder">Enter data to see prediction</p>
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+<script src="/static/app.js"></script>
+
+</body>
+</html>
