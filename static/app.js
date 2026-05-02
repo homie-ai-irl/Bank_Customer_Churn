@@ -1,68 +1,89 @@
-const form = document.getElementById("form");
+// static/app.js
+
+const form      = document.getElementById("form");
 const resultDiv = document.getElementById("result");
-const loading = document.getElementById("loading");
+const loading   = document.getElementById("loading");
 
 form.addEventListener("submit", async (e) => {
     e.preventDefault();
 
-    // 👉 Validate cơ bản
-    if (!credit_score.value || !age.value || !balance.value) {
-        alert("Please fill all required fields!");
-        return;
-    }
-
-    // 👉 Build data gửi API
     const data = {
-        credit_score: parseInt(credit_score.value),
-        country: country.value,
-        gender: gender.value,
-        age: parseInt(age.value),
-        tenure: 3,
-        balance: parseFloat(balance.value),
-        products_number: parseInt(products_number.value),
-        credit_card: 1,
-        active_member: parseInt(active_member.value),
-        estimated_salary: 50000
+        credit_score     : parseFloat(document.getElementById("credit_score").value),
+        country          : document.getElementById("country").value,
+        gender           : document.getElementById("gender").value,
+        age              : parseFloat(document.getElementById("age").value),
+        tenure           : parseFloat(document.getElementById("tenure").value),
+        balance          : parseFloat(document.getElementById("balance").value),
+        products_number  : parseInt(document.getElementById("products_number").value),
+        credit_card      : parseInt(document.getElementById("credit_card").value),
+        active_member    : parseInt(document.getElementById("active_member").value),
+        estimated_salary : parseFloat(document.getElementById("estimated_salary").value),
     };
 
-    // 👉 Show loading
+    // ── Validate ─────────────────────────────────
+    for (const [key, val] of Object.entries(data)) {
+        if (val === null || val === undefined || (typeof val === "number" && isNaN(val))) {
+            alert(`Vui lòng nhập đầy đủ: ${key}`);
+            return;
+        }
+    }
+
     loading.classList.remove("hidden");
     resultDiv.innerHTML = "";
 
     try {
         const res = await fetch("/predict", {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json"
-            },
-            body: JSON.stringify(data)
+            method : "POST",
+            headers: { "Content-Type": "application/json" },
+            body   : JSON.stringify(data)
         });
+
+        if (!res.ok) {
+            const err = await res.json();
+            throw new Error(err.detail || `Server error: ${res.status}`);
+        }
 
         const result = await res.json();
 
-        // 👉 xử lý kết quả
-        const isChurn = result.churn === 1;
-        const prob = (result.probability * 100).toFixed(1);
+        if (result.churn_probability === undefined || isNaN(result.churn_probability)) {
+            throw new Error("Invalid response from server");
+        }
 
-        // 👉 hiển thị đẹp
+        const isChurn = result.churn_prediction === 1;
+        const prob    = (result.churn_probability * 100).toFixed(1);
+        const risk    = result.risk_level;
+
+        // ── Nền TRẮNG + chữ màu → hiển thị rõ trên cả đỏ lẫn xanh ──
+        const riskColor = { "CAO": "#d32f2f", "TRUNG": "#e65100", "THẤP": "#2e7d32" }[risk] || "#333";
+        const riskBadge = `<span style="
+            background: white;
+            color: ${riskColor};
+            padding: 2px 14px;
+            border-radius: 12px;
+            font-weight: bold;
+            font-size: 0.9rem;
+        ">${risk}</span>`;
+
         resultDiv.innerHTML = `
             <div class="result-box ${isChurn ? "churn" : "stay"}">
-                <h3>${isChurn ? "⚠️ High Risk Customer" : "✅ Safe Customer"}</h3>
-                <p>Churn Probability: <b>${prob}%</b></p>
+                <h3>${isChurn ? "High Risk Customer" : "Safe Customer"}</h3>
+                <hr/>
+                <p>Churn Probability : <b>${prob}%</b></p>
+                <p>Risk Level &nbsp;&nbsp;&nbsp;&nbsp;: ${riskBadge}</p>
+                <p>Threshold &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;:
+                   <b>${(result.threshold_used * 100).toFixed(0)}%</b></p>
             </div>
         `;
 
-    } catch (error) {
-        console.error(error);
-
+    } catch (err) {
+        console.error(err);
         resultDiv.innerHTML = `
             <div class="result-box churn">
-                <h3>❌ Error</h3>
-                <p>Something went wrong. Please try again.</p>
+                <h3>Error</h3>
+                <p>${err.message}</p>
             </div>
         `;
     }
 
-    // 👉 hide loading
     loading.classList.add("hidden");
 });

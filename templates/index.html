@@ -6,10 +6,8 @@
     <link rel="stylesheet" href="/static/style.css">
 </head>
 <body>
-
 <div class="container">
 
-    <!-- HEADER -->
     <header class="header">
         <h1>Customer Churn Prediction</h1>
         <p>Analyze customer risk using Machine Learning</p>
@@ -17,32 +15,45 @@
 
     <div class="layout">
 
-        <!-- FORM -->
         <div class="card form-card">
             <h2>Customer Information</h2>
-
             <form id="form">
-
                 <div class="form-grid">
 
                     <div class="form-group">
-                        <label>Credit Score</label>
-                        <input id="credit_score" type="number" required>
+                        <label>Credit Score <span class="hint">300 – 850</span></label>
+                        <input id="credit_score" type="number"
+                               min="300" max="850" placeholder="619" required>
                     </div>
 
                     <div class="form-group">
-                        <label>Age</label>
-                        <input id="age" type="number" required>
+                        <label>Age <span class="hint">18 – 100</span></label>
+                        <input id="age" type="number"
+                               min="18" max="100" placeholder="42" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Tenure <span class="hint">0 – 10 years</span></label>
+                        <input id="tenure" type="number"
+                               min="0" max="10" placeholder="2" required>
                     </div>
 
                     <div class="form-group">
                         <label>Balance</label>
-                        <input id="balance" type="number" required>
+                        <input id="balance" type="number"
+                               min="0" placeholder="0" required>
                     </div>
 
                     <div class="form-group">
-                        <label>Products</label>
-                        <input id="products_number" type="number" required>
+                        <label>Estimated Salary</label>
+                        <input id="estimated_salary" type="number"
+                               min="1" placeholder="100000" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Products Number <span class="hint">1 – 4</span></label>
+                        <input id="products_number" type="number"
+                               min="1" max="4" placeholder="1" required>
                     </div>
 
                     <div class="form-group">
@@ -63,6 +74,14 @@
                     </div>
 
                     <div class="form-group">
+                        <label>Credit Card</label>
+                        <select id="credit_card">
+                            <option value="1">Yes</option>
+                            <option value="0">No</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
                         <label>Active Member</label>
                         <select id="active_member">
                             <option value="1">Yes</option>
@@ -75,27 +94,19 @@
                 <button type="submit" class="btn">
                     🔍 Predict Churn
                 </button>
-
             </form>
         </div>
 
-        <!-- RESULT -->
         <div class="card result-card">
             <h2>Prediction Result</h2>
-
             <div id="loading" class="hidden">⏳ Analyzing...</div>
-
-            <div id="result" class="result-box">
+            <div id="result">
                 <p class="placeholder">Enter data to see prediction</p>
             </div>
-
         </div>
 
     </div>
-
 </div>
-
 <script src="/static/app.js"></script>
-
 </body>
 </html>
